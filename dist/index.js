@@ -2703,6 +2703,7 @@ module.exports = { setup, score }
 
 const core = __nccwpck_require__(186)
 const fs = __nccwpck_require__(747);
+const path = __nccwpck_require__(622)
 
 function createConfig() {
 
@@ -2723,11 +2724,14 @@ function createConfig() {
     }
     `
 
-    fs.writeFileSync(".eslintrc.custom.json", data);
+    const finalPath = path.resolve(__dirname, ".eslintrc.custom.json")
+    core.debug(finalPath)
+
+    fs.writeFileSync(finalPath, data);
 
     core.debug("File written successfully\n");
     core.debug("The written has the following contents:");
-    core.debug(fs.readFileSync(".eslintrc.custom.json", "utf8"));
+    core.debug(fs.readFileSync(finalPath, "utf8"));
 
 }
 
