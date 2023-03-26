@@ -9,7 +9,7 @@ inputs:
     required: true
   start-point:
     description: "Enter the starting point"
-    required: false
+    required: true
     default: "./"
 outputs:
   setup:

@@ -8,17 +8,15 @@ async function run() {
     const action = core.getInput("action");
     core.info(`Action will be  ${action}`);
 
+    const startPoint = core.getInput('start-point');
+    core.info(`Starting point will be  ${startPoint}`);
 
     if (action === "SETUP") {
-      esLintScore.setup();
-
+      esLintScore.setup(startPoint);
       core.setOutput('setup', "success :thumbsup:");
     }
 
     if (action === "SCORE") {
-      const startPoint = core.getInput('start-point');
-      core.info(`Starting point will be  ${startPoint}`);
-
       const files = esLintScore.readCodebase(startPoint);
       core.info(JSON.stringify(files)); // debug is only output if you set the secret `ACTIONS_RUNNER_DEBUG` to true
 

@@ -1,8 +1,7 @@
-const core = require("@actions/core")
+const core = require("@actions/core");
 const fs = require('fs');
-const path = require("path")
 
-function createConfig() {
+function createConfig(rootPath) {
 
     const data = `
     {
@@ -21,14 +20,14 @@ function createConfig() {
     }
     `
 
-    const finalPath = path.resolve(__dirname, ".eslintrc.custom.json")
-    core.debug(finalPath)
+    const writePath = rootPath + ".eslintrc.custom.json"
+    core.debug(writePath)
 
-    fs.writeFileSync(finalPath, data);
+    fs.writeFileSync(writePath, data);
 
     core.debug("File written successfully\n");
     core.debug("The written has the following contents:");
-    core.debug(fs.readFileSync(finalPath, "utf8"));
+    core.debug(fs.readFileSync(writePath, "utf8"));
 
 }
 

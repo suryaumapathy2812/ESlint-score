@@ -2701,11 +2701,10 @@ module.exports = { setup, score }
 /***/ 14:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
-const core = __nccwpck_require__(186)
+const core = __nccwpck_require__(186);
 const fs = __nccwpck_require__(747);
-const path = __nccwpck_require__(622)
 
-function createConfig() {
+function createConfig(rootPath) {
 
     const data = `
     {
@@ -2724,14 +2723,14 @@ function createConfig() {
     }
     `
 
-    const finalPath = path.resolve(__dirname, ".eslintrc.custom.json")
-    core.debug(finalPath)
+    const writePath = rootPath + ".eslintrc.custom.json"
+    core.debug(writePath)
 
-    fs.writeFileSync(finalPath, data);
+    fs.writeFileSync(writePath, data);
 
     core.debug("File written successfully\n");
     core.debug("The written has the following contents:");
-    core.debug(fs.readFileSync(finalPath, "utf8"));
+    core.debug(fs.readFileSync(writePath, "utf8"));
 
 }
 
@@ -2953,17 +2952,15 @@ async function run() {
     const action = core.getInput("action");
     core.info(`Action will be  ${action}`);
 
+    const startPoint = core.getInput('start-point');
+    core.info(`Starting point will be  ${startPoint}`);
 
     if (action === "SETUP") {
-      esLintScore.setup();
-
+      esLintScore.setup(startPoint);
       core.setOutput('setup', "success :thumbsup:");
     }
 
     if (action === "SCORE") {
-      const startPoint = core.getInput('start-point');
-      core.info(`Starting point will be  ${startPoint}`);
-
       const files = esLintScore.readCodebase(startPoint);
       core.info(JSON.stringify(files)); // debug is only output if you set the secret `ACTIONS_RUNNER_DEBUG` to true
 
