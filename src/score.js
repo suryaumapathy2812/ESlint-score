@@ -51,17 +51,18 @@ function calculateScore() {
 
     if (maxIssues === 0) {
         core.debug('No issues found. ESLint score: 100%');
-    } else {
-        const currentIssues = totalErrors + (totalWarnings * 0.5);
-        const score = ((maxIssues - currentIssues) / maxIssues) * 100;
+        return 100
+    }
 
-        if (isNaN(score)) {
-            core.debug('Error: Unable to calculate ESLint score');
-            return 0;
-        } else {
-            core.debug(`ESLint score: ${score.toFixed(2)}%`);
-            return score;
-        }
+    const currentIssues = totalErrors + (totalWarnings * 0.5);
+    const score = ((maxIssues - currentIssues) / maxIssues) * 100;
+
+    if (isNaN(score)) {
+        core.debug('Error: Unable to calculate ESLint score');
+        return 0;
+    } else {
+        core.debug(`ESLint score: ${score.toFixed(2)}%`);
+        return score;
     }
 
 }
