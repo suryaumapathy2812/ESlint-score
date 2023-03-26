@@ -4,11 +4,16 @@ branding:
   icon: "at-sign"
   color: "gray-dark"
 inputs:
-  start-point:
-    description: "enter the starting point"
+  action:
+    description: "Name the action you want to run. options SETUP/SCORE"
     required: true
+  start-point:
+    description: "Enter the starting point"
+    required: false
     default: "./"
 outputs:
+  setup:
+    description: "setting up everything to run"
   score: # output will be available to future steps
     description: "Score base on your code base"
 runs:

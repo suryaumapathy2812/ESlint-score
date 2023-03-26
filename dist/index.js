@@ -2691,10 +2691,58 @@ exports.default = _default;
 /***/ 786:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
+const setup = __nccwpck_require__(14);
+const score = __nccwpck_require__(687)
+
+module.exports = { setup, score }
+
+/***/ }),
+
+/***/ 14:
+/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
+
+const core = __nccwpck_require__(186)
+const fs = __nccwpck_require__(747);
+
+function createConfig() {
+
+    const data = `
+    {
+        "extends": "eslint:recommended",
+        "env": {
+            "browser": true,
+            "es2021": true
+        },
+        "parserOptions": {
+            "ecmaVersion": 12
+        },
+        "rules": {
+            "no-unused-vars": "warn",
+            "no-console": "off"
+        }
+    }
+    `
+
+    fs.writeFileSync(".eslintrc.custom.json", data);
+
+    core.debug("File written successfully\n");
+    core.debug("The written has the following contents:");
+    core.debug(fs.readFileSync("programming.txt", "utf8"));
+
+}
+
+module.exports = createConfig 
+
+/***/ }),
+
+/***/ 687:
+/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
+
 const core = __nccwpck_require__(186)
 const fs = __nccwpck_require__(747);
 
 function readCodebase(directory) {
+
     const files = fs.readdirSync(directory)
         .filter(file => {
 
@@ -2727,7 +2775,6 @@ function readCodebase(directory) {
 
     return filePaths
 }
-
 
 function calculateScore() {
 
@@ -2899,17 +2946,31 @@ const esLintScore = __nccwpck_require__(786)
 async function run() {
   try {
 
-    const startPoint = core.getInput('start-point');
-    core.info(`Starting point will be  ${startPoint}`);
+    const action = core.getInput("action");
+    core.info(`Action will be  ${action}`);
 
-    const files = esLintScore.readCodebase(startPoint);
-    core.info(JSON.stringify(files)); // debug is only output if you set the secret `ACTIONS_RUNNER_DEBUG` to true
 
-    const score = esLintScore.calculateScore()
-    core.info(`ESLint score: ${score.toFixed(2)}%`);
+    if (action === "SETUP") {
+      esLintScore.setup();
 
-    core.setOutput('score', score);
+      core.setOutput('setup', "success :thumbsup:");
+    }
+
+    if (action === "SCORE") {
+      const startPoint = core.getInput('start-point');
+      core.info(`Starting point will be  ${startPoint}`);
+
+      const files = esLintScore.readCodebase(startPoint);
+      core.info(JSON.stringify(files)); // debug is only output if you set the secret `ACTIONS_RUNNER_DEBUG` to true
+
+      const score = esLintScore.calculateScore()
+      core.info(`ESLint score: ${score.toFixed(2)}%`);
+
+      core.setOutput('score', score);
+    }
+
   } catch (error) {
+    core.info(`:poop: :poop: :poop:`)
     core.setFailed(error.message);
   }
 }
