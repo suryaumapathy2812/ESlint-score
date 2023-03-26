@@ -25,17 +25,19 @@ jobs:
       
       - name: Checkout repository
         uses: actions/checkout@v2
+        
+      - name: Install ESLint
+        run: npm install eslint
+      
 
       - name: Setup ESLint Score
         uses: suryaumapathy2812/ESlint-score@v1
         with:
           action: "SETUP"
+          start-point: './'
 
-      - name: Install ESLint
-        run: npm install eslint
-        
       - name: run ESlint
-        run: eslint . --ext .js --format json > eslint-results.json
+        run: npx eslint -c ./.eslintrc.custom.json . --ext .js --format json > eslint-results.json
 
       - name: Run ESLint Score
         uses: suryaumapathy2812/ESlint-score@v1

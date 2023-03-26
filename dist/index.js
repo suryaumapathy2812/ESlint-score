@@ -2707,7 +2707,12 @@ const path = __nccwpck_require__(622);
 
 function createConfig(rootPath) {
 
-    const data = `
+    const ignoreContent = `
+    node_modules/**
+    **.config.js
+    `
+
+    const configContent = `
     {
         "extends": "eslint:recommended",
         "env": {
@@ -2724,18 +2729,28 @@ function createConfig(rootPath) {
     }
     `
 
+    const files = [
+        { name: ".eslintignore", content: ignoreContent },
+        { name: ".eslintrc.custom.json", content: configContent }
+    ]
 
-    const absolutePath = path.resolve(rootPath);
-    core.info(absolutePath)
 
-    const writePath = absolutePath + "/.eslintrc.custom.json"
-    core.info(writePath)
+    files.forEach(({ name, content }) => {
 
-    fs.writeFileSync(writePath, data);
+        const absolutePath = path.resolve(rootPath);
+        core.info(absolutePath)
 
-    core.info("File written successfully\n");
-    core.info("The written has the following contents:");
-    core.info(fs.readFileSync(writePath, "utf8"));
+        const writePath = absolutePath + "/" + name
+        core.info(writePath)
+
+        fs.writeFileSync(writePath, content);
+
+        core.info("File written successfully\n");
+        core.info("The written has the following contents:");
+        core.info(fs.readFileSync(writePath, "utf8"));
+
+    })
+
 
 }
 
