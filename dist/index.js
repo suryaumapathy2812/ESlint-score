@@ -2727,7 +2727,7 @@ function createConfig() {
 
     core.debug("File written successfully\n");
     core.debug("The written has the following contents:");
-    core.debug(fs.readFileSync("programming.txt", "utf8"));
+    core.debug(fs.readFileSync(".eslintrc.custom.json", "utf8"));
 
 }
 
