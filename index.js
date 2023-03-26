@@ -17,10 +17,10 @@ async function run() {
     }
 
     if (action === "SCORE") {
-      const files = esLintScore.readCodebase(startPoint);
+      const files = esLintScore.score.readCodebase(startPoint);
       core.info(JSON.stringify(files)); // debug is only output if you set the secret `ACTIONS_RUNNER_DEBUG` to true
 
-      const score = esLintScore.calculateScore()
+      const score = esLintScore.score.calculateScore()
       core.info(`ESLint score: ${score.toFixed(2)}%`);
 
       core.setOutput('score', score);
