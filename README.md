@@ -12,29 +12,37 @@ name: ESLint Score
 on:
   push:
     branches:
-      - main
+      - master
 
 jobs:
   eslint-score:
     runs-on: ubuntu-latest
     steps:
       - name: Install Node.js
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3.5.1
         with:
           node-version: '16.x'
+      
       - name: Checkout repository
-        uses: actions/checkout@v2
-
+        uses: actions/checkout@v3
+        
       - name: Install ESLint
         run: npm install eslint
       
-      - name: Copy custom .eslintrc.custom.json file
-        run: cp .github/.eslintrc.custom.json .
-      
-      - name: Run ESLint Score
-        uses: suryaumapathy2812/ESLint-score@v1
+      - name: Setup ESLint Score
+        uses: suryaumapathy2812/ESlint-score@v1
         with:
-          start-point: './src'
+          action: "SETUP"
+          start-point: './'
+
+      - name: run ESlint
+        run: npx eslint -c ./.eslintrc.custom.json --ext .js --output-file eslint-results.json --format json ./ || true
+
+      - name: Run ESLint Score
+        uses: suryaumapathy2812/ESlint-score@v1
+        with:
+          action: "SCORE"
+          start-point: './'
       
       - name: Display ESLint Score
         run: |
