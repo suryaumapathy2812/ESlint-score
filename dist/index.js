@@ -2688,20 +2688,78 @@ exports.default = _default;
 
 /***/ }),
 
-/***/ 258:
-/***/ ((module) => {
+/***/ 786:
+/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
-let wait = function (milliseconds) {
-  return new Promise((resolve) => {
-    if (typeof milliseconds !== 'number') {
-      throw new Error('milliseconds not a number');
+const core = __nccwpck_require__(186)
+const fs = __nccwpck_require__(747);
+
+function readCodebase(directory) {
+    const files = fs.readdirSync(directory)
+        .filter(file => {
+
+            if (
+                file.startsWith('.') ||
+                file === 'node_modules' ||
+                file.includes(".config") ||
+                file.includes(".min.js") ||
+                file.includes(".test.js")
+            ) {
+                return false;
+            } else {
+                return true
+            }
+
+        });
+
+    const filePaths = []
+
+    files.forEach(file => {
+        const filePath = directory + '/' + file;
+        const stats = fs.statSync(filePath);
+
+        if (stats.isFile() && file.endsWith('.js')) {
+            filePaths.push({ path: filePath })
+        } else if (stats.isDirectory()) {
+            filePaths.push(...readCodebase(filePath));
+        }
+    });
+
+    return filePaths
+}
+
+
+function calculateScore() {
+
+    const results = JSON.parse(fs.readFileSync('eslint-results.json', 'utf8'));
+    let totalErrors = 0;
+    let totalWarnings = 0;
+
+    results.forEach(result => {
+        totalErrors += result.errorCount;
+        totalWarnings += result.warningCount;
+    });
+
+    const maxIssues = totalErrors + totalWarnings;
+
+    if (maxIssues === 0) {
+        core.debug('No issues found. ESLint score: 100%');
+    } else {
+        const currentIssues = totalErrors + (totalWarnings * 0.5);
+        const score = ((maxIssues - currentIssues) / maxIssues) * 100;
+
+        if (isNaN(score)) {
+            core.debug('Error: Unable to calculate ESLint score');
+            return 0;
+        } else {
+            core.debug(`ESLint score: ${score.toFixed(2)}%`);
+            return score;
+        }
     }
-    setTimeout(() => resolve("done!"), milliseconds)
-  });
-};
 
-module.exports = wait;
+}
 
+module.exports = { calculateScore, readCodebase }
 
 /***/ }),
 
@@ -2835,20 +2893,22 @@ var __webpack_exports__ = {};
 // This entry need to be wrapped in an IIFE because it need to be isolated against other modules in the chunk.
 (() => {
 const core = __nccwpck_require__(186);
-const wait = __nccwpck_require__(258);
-
+const esLintScore = __nccwpck_require__(786)
 
 // most @actions toolkit packages have async methods
 async function run() {
   try {
-    const ms = core.getInput('milliseconds');
-    core.info(`Waiting ${ms} milliseconds ...`);
 
-    core.debug((new Date()).toTimeString()); // debug is only output if you set the secret `ACTIONS_RUNNER_DEBUG` to true
-    await wait(parseInt(ms));
-    core.info((new Date()).toTimeString());
+    const startPoint = core.getInput('start-point');
+    core.info(`Starting point will be  ${startPoint}`);
 
-    core.setOutput('time', new Date().toTimeString());
+    const files = esLintScore.readCodebase(startPoint);
+    core.info(JSON.stringify(files)); // debug is only output if you set the secret `ACTIONS_RUNNER_DEBUG` to true
+
+    const score = esLintScore.calculateScore()
+    core.info(`ESLint score: ${score.toFixed(2)}%`);
+
+    core.setOutput('score', score);
   } catch (error) {
     core.setFailed(error.message);
   }

@@ -1,18 +1,20 @@
 const core = require('@actions/core');
-const wait = require('./wait');
-
+const esLintScore = require("./src/eslint")
 
 // most @actions toolkit packages have async methods
 async function run() {
   try {
-    const ms = core.getInput('milliseconds');
-    core.info(`Waiting ${ms} milliseconds ...`);
 
-    core.debug((new Date()).toTimeString()); // debug is only output if you set the secret `ACTIONS_RUNNER_DEBUG` to true
-    await wait(parseInt(ms));
-    core.info((new Date()).toTimeString());
+    const startPoint = core.getInput('start-point');
+    core.info(`Starting point will be  ${startPoint}`);
 
-    core.setOutput('time', new Date().toTimeString());
+    const files = esLintScore.readCodebase(startPoint);
+    core.info(JSON.stringify(files)); // debug is only output if you set the secret `ACTIONS_RUNNER_DEBUG` to true
+
+    const score = esLintScore.calculateScore()
+    core.info(`ESLint score: ${score.toFixed(2)}%`);
+
+    core.setOutput('score', score);
   } catch (error) {
     core.setFailed(error.message);
   }

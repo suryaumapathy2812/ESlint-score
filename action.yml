@@ -1,13 +1,16 @@
-name: 'Wait'
-description: 'Wait a designated number of milliseconds'
+name: "ESLint-score"
+description: "This Github Action generates ESLint Score for your JavaScript codebase"
+branding:
+  icon: "at-sign"
+  color: "gray-dark"
 inputs:
-  milliseconds:  # id of input
-    description: 'number of milliseconds to wait'
+  start-point:
+    description: "enter the starting point"
     required: true
-    default: '1000'
+    default: "./"
 outputs:
-  time: # output will be available to future steps
-    description: 'The current time after waiting'
+  score: # output will be available to future steps
+    description: "Score base on your code base"
 runs:
-  using: 'node16'
-  main: 'dist/index.js'
+  using: "node16"
+  main: "dist/index.js"
