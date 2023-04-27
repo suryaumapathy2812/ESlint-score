@@ -7,6 +7,8 @@ function createConfig(rootPath) {
     const ignoreContent = `
     node_modules/**
     **.config.js
+    **.min.js
+    assets/js/vendor/**
     `
 
     const configContent = `
