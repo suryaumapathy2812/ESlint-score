@@ -12,20 +12,78 @@ function createConfig(rootPath) {
     `
 
     const configContent = `
+{
+  "plugins": [
+    "html",
+    "@html-eslint",
+    "vue",
+    "prettier"
+  ],
+  "env": {
+    "browser": true,
+    "es2021": true
+  },
+  "extends": [
+    "code-complexity",
+    "eslint:recommended",
+    "airbnb",
+    "prettier",
+    "prettier-standard"
+  ],
+  "settings": {
+    "html/html-extensions": [
+      ".html"
+    ],
+    "html/report-bad-indent": "off"
+  },
+  "rules": {
+    "no-plusplus": "off",
+    "no-alert": "off",
+    "no-unused-vars": "error",
+    "no-console": "off",
+    "camelcase": "off",
+    "doctype-first": "off",
+    "no-multiple-empty-lines": [
+      "error",
+      {
+        "max": 1,
+        "maxBOF": 0,
+        "maxEOF": 0
+      }
+    ],
+    "prettier/prettier": [
+      "error",
+      {
+        "singleQuote": false,
+        "endOfLine": "auto"
+      }
+    ]
+  },
+  "ignorePatterns": [
+    "node_modules/",
+    "assets/js/vendor/"
+  ],
+  "parserOptions": {
+    "ecmaVersion": 12
+  },
+  "overrides": [
     {
-        "extends": "eslint:recommended",
-        "env": {
-            "browser": true,
-            "es2021": true
-        },
-        "parserOptions": {
-            "ecmaVersion": 12
-        },
-        "rules": {
-            "no-unused-vars": "warn",
-            "no-console": "off"
-        }
+      "files": [
+        "*.html"
+      ],
+      "parser": "@html-eslint/parser",
+      "extends": [
+        "plugin:@html-eslint/recommended"
+      ],
+      "rules": {
+        "spaced-comment": "off",
+        "vue/html-indent": "off",
+        "@html-eslint/indent": "off",
+        "prettier/prettier": "off"
+      }
     }
+  ]
+}
     `
 
     const files = [
